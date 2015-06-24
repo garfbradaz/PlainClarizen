@@ -60,9 +60,7 @@ namespace Xamasoft.JsonClassGenerator.UI
             {
                 settings.SecondaryNamespace = string.Empty;
             }
-            settings.Language = 
-            
-            .SelectedItem.GetType().Name;
+            //settings.Language = SelectedItem.GetType().Name;
             settings.SingleFile = chkSingleFile.Checked;
             settings.DocumentationExamples = chkDocumentationExamples.Checked;
             settings.Save();
@@ -324,6 +322,11 @@ namespace Xamasoft.JsonClassGenerator.UI
         }
 
         private void edtJson_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void edtSecondaryNamespace_TextChanged(object sender, EventArgs e)
         {
 
         }
