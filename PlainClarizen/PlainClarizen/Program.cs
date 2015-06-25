@@ -7,6 +7,7 @@ using Bradaz.Clarizen.API;
 using Xamasoft.JsonClassGenerator;
 using Xamasoft.JsonClassGenerator.CodeWriters;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace PlainClarizen
 {
@@ -15,8 +16,32 @@ namespace PlainClarizen
         static void Main(string[] args)
         {
             RestClient client = new RestClient("garfbradaz", "Poohead26@");
-            client.GetAllMetadataDescribeEntitiesAndGetAllFields(entityType.Task);
+            foreach(string s in client.ListEntities)
+            {
+                client.GetAllMetadataDescribeEntitiesAndGetAllFields(s);
+            }
 
+
+            if (client.ConvertedMetadata != null)
+            {
+                foreach (KeyValuePair<string, JToken> pair in client.ConvertedMetadata)
+                {
+                    var gen = Prepare(pair.Value, pair.Key);
+                    if (gen == null) return;
+
+                    try
+                    {
+                        gen.GenerateClasses();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write("Error writing class " + ex + pair.Key + " " + pair.Value);
+                    }
+
+                }
+            }
+            /*
             if (!string.IsNullOrWhiteSpace(client.ConvertedMetadata))
             {
                 var gen = Prepare(client, entityType.Task);
@@ -32,6 +57,7 @@ namespace PlainClarizen
                     Console.Write("Error writing class " + ex);
                 }
             }
+             */
             Console.ReadLine();
         }
 
@@ -40,7 +66,7 @@ namespace PlainClarizen
         {
 
             var gen = new JsonClassGenerator();
-            gen.Example = client.ConvertedMetadata;
+            gen.Example = client.ConvertedMetadata.ToString();
             gen.InternalVisibility = false;
             gen.CodeWriter = new CSharpCodeWriter();
             gen.ExplicitDeserialization = false;
@@ -65,6 +91,34 @@ namespace PlainClarizen
                         break;
             }
             
+            gen.UsePascalCase = true;
+            gen.UseNestedClasses = false;
+            gen.ApplyObfuscationAttributes = false;
+            gen.SingleFile = true;
+            gen.ExamplesInDocumentation = false;
+            return gen;
+        }
+        static JsonClassGenerator Prepare(JToken json, string type)
+        {
+
+            var gen = new JsonClassGenerator();
+            gen.Example = json.ToString();
+            gen.InternalVisibility = false;
+            gen.CodeWriter = new CSharpCodeWriter();
+            gen.ExplicitDeserialization = false;
+
+            //Add read line fpr namespace ;
+            var input = string.Empty;
+            ReadInputFromUser(ref input, " Please enter a Namespace ");
+
+            gen.Namespace = "MainNameSpace.Main";
+            gen.NoHelperClass = false;
+            gen.SecondaryNamespace = "SecondNameSpace.Main";
+            //gen.UseNamespaces = true;
+            gen.TargetFolder = @"D:\test data\PlainClarizen";
+            gen.UseProperties = true;
+            gen.MainClass = "Clarizen" + type;
+
             gen.UsePascalCase = true;
             gen.UseNestedClasses = false;
             gen.ApplyObfuscationAttributes = false;
