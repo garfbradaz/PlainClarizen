@@ -1,5 +1,5 @@
 # PlainClarizen
-Application to convert Clarizen Entities to Plain Old CLR Objects. Please see [Instructions](https://github.com/garfbradaz/PlainClarizen/blob/master/docs/instructions.md) on how to use.
+Application to convert [Clarizen Entities](http://www.clarizen.com/) to Plain Old CLR Objects. Please see [Instructions](https://github.com/garfbradaz/PlainClarizen/blob/master/docs/instructions.md) on how to use.
 
 This application is powered by :
 
