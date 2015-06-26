@@ -52,12 +52,9 @@
     <StartupObject>PlainClarizen.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bradaz.Utils">
-      <HintPath>C:\Users\Gareth.Bradley.HACHETTE\OneDrive\CODE\Github\bradaz.utils\Bradaz.Utils\bin\Debug\Bradaz.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="Clarizen.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Clarizen.Net, Version=0.0.0.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Gareth.Bradley.HACHETTE\OneDrive\CODE\Github\clarizen.net\Clarizen.Net\Clarizen.Net\bin\Debug\Clarizen.Net.dll</HintPath>
+      <HintPath>Third Party References\Clarizen.Net.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
