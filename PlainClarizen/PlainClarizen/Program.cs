@@ -21,9 +21,9 @@ namespace PlainClarizen
             var userName = string.Empty;
             var passWord = string.Empty;
 
-            ReadInputFromUser(ref userName, " Please enter your Clarizen Username");
+            ReadInputFromUser(ref userName, "Please enter your Clarizen Username");
             ReadInputFromUserSecretly(ref passWord, "Please enter your Clarizen Password");
-            ReadInputFromUser(ref mainNameSpace, " Please enter a Main Namespace ");
+            ReadInputFromUser(ref mainNameSpace, "Please enter a Main Namespace ");
 
             //TODO add logic to test this is a correct drive/folder.
             ReadInputFromUser(ref folder, "Please enter the folder location to save your code files ");
@@ -66,8 +66,6 @@ namespace PlainClarizen
 
                 }
             }
-
-
             Console.Write("Finished! - code should be ready in folder " + folder + " ");
             Console.ReadLine();
         }
