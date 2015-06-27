@@ -33,24 +33,29 @@ namespace PlainClarizen
 
             bool count = true;
             int counting = 0;
+            Console.WriteLine("Fetching data from Clarizen...");
             if (client.ListEntities != null)
             {
                 foreach (string s in client.ListEntities)
                 {
                     counting++;
                     client.GetAllMetadataDescribeEntitiesAndGetAllFields(s);
-                    //if (counting > 2 && count == true) break;
+                    Console.Write(".");
+                    if (counting > 2 && count == true) break;
                 }
+                Console.WriteLine();
             }
 
 
 
             if (client.ConvertedMetadata != null)
-
             {
+
+               
+                Console.WriteLine("Creating Classes...");
                 foreach (KeyValuePair<string, JToken> pair in client.ConvertedMetadata)
                 {
-
+                        Console.Write(".");
                         var gen = Prepare(pair.Value, pair.Key,folder,mainNameSpace);
                         if (gen == null) return;
 
@@ -66,6 +71,7 @@ namespace PlainClarizen
 
                 }
             }
+            Console.WriteLine();
             Console.Write("Finished! - code should be ready in folder " + folder + " ");
             Console.ReadLine();
         }
@@ -182,6 +188,8 @@ namespace PlainClarizen
             Console.WriteLine();
             
         }
+
+
     }
 }
         
