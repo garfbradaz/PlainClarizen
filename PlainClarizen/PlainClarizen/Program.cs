@@ -16,47 +16,80 @@ namespace PlainClarizen
     {
         static void Main(string[] args)
         {
-            var mainNameSpace = string.Empty;
-            var folder = string.Empty;
-            var userName = string.Empty;
-            var passWord = string.Empty;
-
-            ReadInputFromUser(ref userName, "Please enter your Clarizen Username");
-            ReadInputFromUserSecretly(ref passWord, "Please enter your Clarizen Password");
-            ReadInputFromUser(ref mainNameSpace, "Please enter a Main Namespace ");
-
-            //TODO add logic to test this is a correct drive/folder.
-            ReadInputFromUser(ref folder, "Please enter the folder location to save your code files ");
-
-            ///need to change your password.
-            RestClient client = new RestClient(userName, passWord);
-
-            bool count = true;
-            int counting = 0;
-            Console.WriteLine("Fetching data from Clarizen...");
-            if (client.ListEntities != null)
+            bool repeat = true;
+            while (repeat)
             {
-                foreach (string s in client.ListEntities)
+
+                var mainNameSpace = string.Empty;
+                var folder = string.Empty;
+                var userName = string.Empty;
+                var passWord = string.Empty;
+                string howManyEntities = string.Empty;
+                int count = 0;
+                string countEntities = "N";
+                string[] yn = { "Y", "N", "y", "n" };
+                bool limitEntities = false;
+
+                ReadInputFromUser(ref userName, "Please enter your Clarizen Username");
+                ReadInputFromUserSecretly(ref passWord, "Please enter your Clarizen Password");
+                ReadInputFromUser(ref mainNameSpace, "Please enter a Main Namespace ");
+                ReadInputFromUser(ref countEntities, "Parse all Clarizen Entities? Y/N ", yn);
+
+
+                if (countEntities == "N" || countEntities == "n") limitEntities = true;
+                if (limitEntities == true)
                 {
-                    counting++;
-                    client.GetAllMetadataDescribeEntitiesAndGetAllFields(s);
-                    Console.Write(".");
-                    if (counting > 2 && count == true) break;
+                    ReadInputFromUser(ref howManyEntities, "How many Entities to parse?");
+                    try
+                    {
+                        count = Convert.ToInt32(howManyEntities);
+                    }
+                    catch (FormatException e)
+                    {
+                        Console.WriteLine("Input string is not a sequence of digits.");
+                    }
+                    catch (OverflowException e)
+                    {
+                        Console.WriteLine("The number cannot fit in an Int32.");
+                    }
                 }
-                Console.WriteLine();
-            }
+
+
+                //TODO add logic to test this is a correct drive/folder.
+                ReadInputFromUser(ref folder, "Please enter the folder location to save your code files ");
+
+
+                ///need to change your password.
+                RestClient client = new RestClient(userName, passWord);
 
 
 
-            if (client.ConvertedMetadata != null)
-            {
-
-               
-                Console.WriteLine("Creating Classes...");
-                foreach (KeyValuePair<string, JToken> pair in client.ConvertedMetadata)
+                Console.WriteLine("Fetching data from Clarizen...");
+                if (client.ListEntities != null)
                 {
+                    int counting = 0;
+                    foreach (string s in client.ListEntities)
+                    {
+                        counting++;
+                        client.GetAllMetadataDescribeEntitiesAndGetAllFields(s);
                         Console.Write(".");
-                        var gen = Prepare(pair.Value, pair.Key,folder,mainNameSpace);
+                        if (counting > count && limitEntities == true) break;
+                    }
+                    Console.WriteLine();
+                }
+
+
+
+                if (client.ConvertedMetadata != null)
+                {
+
+
+                    Console.WriteLine("Creating Classes...");
+                    foreach (KeyValuePair<string, JToken> pair in client.ConvertedMetadataWithoutCustomFields)
+                    {
+
+                        Console.Write(".");
+                        var gen = Prepare(pair.Value, pair.Key, folder, mainNameSpace);
                         if (gen == null) return;
 
                         try
@@ -69,12 +102,29 @@ namespace PlainClarizen
                             Console.Write("Error writing class " + ex + pair.Key + " " + pair.Value);
                         }
 
+                    }
                 }
+
+ 
+
+                Console.WriteLine();
+                Console.Write("Finished! - code should be ready in folder " + folder + " ");
+                Console.WriteLine();
+                string go = string.Empty;
+                ReadInputFromUser(ref go, "Continue? ");
+                if (go == "Y" || go == "y")
+                {
+                    repeat = true;
+                }
+                else
+                {
+                    repeat = false;
+                }
+
+
             }
-            Console.WriteLine();
-            Console.Write("Finished! - code should be ready in folder " + folder + " ");
-            Console.ReadLine();
         }
+
 
         static JsonClassGenerator Prepare(JToken json, string type, string folder,
             string mainNameSpace = "MainNameSpace.Main")
@@ -158,6 +208,7 @@ namespace PlainClarizen
             }
 
         }
+
 
         static void ReadInputFromUserSecretly(ref string input, string displayMessage)
         {
